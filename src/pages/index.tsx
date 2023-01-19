@@ -1,7 +1,7 @@
 
 import { useEffect, useRef } from 'react'
 import { GetStaticProps } from "next";
-import { BallBigRoad, Balls, CurrentScore, MESSAGE_FOR_MAKE_INITIAL_STATE_OF_THE_GAME, SocketEvents } from '../utils/globalTypesEnumsAndInterfaces'
+import { BallBigRoad, Balls, BigEyeBoyBall, CurrentScore, MESSAGE_FOR_MAKE_INITIAL_STATE_OF_THE_GAME, SocketEvents } from '../utils/globalTypesEnumsAndInterfaces'
 import {
   BallDiv,
   BarDiv,
@@ -19,12 +19,18 @@ import { io, Socket } from 'socket.io-client'
 import { useSelector, useDispatch } from 'react-redux'
 import { addBallsOnBeadPlate, cleanTheBeadPlate, getBeadPlateBalls, setBallOnBeadPlate } from '../slices/beadPlateSlice'
 import { getBigRoadBalls, addBallsOnBigRoad, setBallOnBigRoad, cleanTheBigRoad, addBarOnLastBallOfTheBigRoad } from './../slices/bigRoadSlice';
-import { BallBeadPlate, MatchData } from './../utils/globalTypesEnumsAndInterfaces';
+import { addBallsOnBigEyeBoy, cleanTheBigEyeBoy, getBigEyeBoyBalls } from './../slices/bigEyeBoySlice';
+import { addBallsOnSmallRoad, cleanTheSmallRoad, getSmallRoadBalls } from './../slices/smallRoadSlice';
+import { BallBeadPlate, MatchData, SmallRoadBall } from './../utils/globalTypesEnumsAndInterfaces';
+import { addBallsOnCockroachPig, cleanTheCockroachPig, getCockroachPigBalls } from '../slices/cockroachPigSlice';
 
 export default function Scoreboard({ currentScore }: MatchData) {
 
   const ballsOfBeadPlate = useSelector(getBeadPlateBalls)
   const ballsOfBigRoad = useSelector(getBigRoadBalls)
+  const ballsOfBigEyeBoy = useSelector(getBigEyeBoyBalls)
+  const ballsOfSmallRoad = useSelector(getSmallRoadBalls)
+  const ballsOfCockroachPig = useSelector(getCockroachPigBalls)
   const dispatch = useDispatch()
   const isDev = useRef(true) //! TODO: Remove this variable when project is done
   const socket = useRef<null | Socket>(null)
@@ -40,13 +46,14 @@ export default function Scoreboard({ currentScore }: MatchData) {
     socket.current = io()
 
     socket.current.on(SocketEvents.ADD_BALL, (newMatchData: MatchData) => {
-      const { newBeadPlateBall, isItToClean, newBigRoadBall, newBigRoadBar, currentScore } = newMatchData
+      const { newBeadPlateBall, isItToClean, newBigRoadBall, newBigRoadBar,
+        currentScore, newBigEyeBoyBall, newSmallRoadBall, newCockroachPigBall } = newMatchData
 
-      console.log('newMatchData', newMatchData)
+      // console.log('newMatchData', newMatchData)
 
       if (currentScore) {
         currentScoreValue.current = currentScore
-        console.log('currentScoreValue', currentScoreValue.current)
+        // console.log('currentScoreValue', currentScoreValue.current)
       }
 
       if (newBeadPlateBall) {
@@ -65,6 +72,24 @@ export default function Scoreboard({ currentScore }: MatchData) {
         dispatch(addBarOnLastBallOfTheBigRoad(newBigRoadBar))
       }
 
+      if (newBigEyeBoyBall) {
+        // if (isItToClean?.allBallsOnBeadPlate) dispatch(setBallOnBeadPlate(newBigEyeBoyBall))
+        // else dispatch(addBallsOnBeadPlate(newBigEyeBoyBall))
+        dispatch(addBallsOnBigEyeBoy(newBigEyeBoyBall))
+      }
+
+      if (newSmallRoadBall) {
+        // if (isItToClean?.allBallsOnBeadPlate) dispatch(setBallOnBeadPlate(newBigEyeBoyBall))
+        // else dispatch(addBallsOnBeadPlate(newBigEyeBoyBall))
+        dispatch(addBallsOnSmallRoad(newSmallRoadBall))
+      }
+
+      if (newCockroachPigBall) {
+        // if (isItToClean?.allBallsOnBeadPlate) dispatch(setBallOnBeadPlate(newBigEyeBoyBall))
+        // else dispatch(addBallsOnBeadPlate(newBigEyeBoyBall))
+        dispatch(addBallsOnCockroachPig(newCockroachPigBall))
+      }
+
     })
 
     socket.current.on(SocketEvents.CLEAR_SHOE, (newMatchData: MatchData) => {
@@ -77,6 +102,9 @@ export default function Scoreboard({ currentScore }: MatchData) {
       if (isItToClean?.allMatchData) {
         dispatch(cleanTheBeadPlate())
         dispatch(cleanTheBigRoad())
+        dispatch(cleanTheBigEyeBoy())
+        dispatch(cleanTheSmallRoad())
+        dispatch(cleanTheCockroachPig())
       }
 
     })
@@ -97,7 +125,7 @@ export default function Scoreboard({ currentScore }: MatchData) {
           key={ball.key}
           // css={{ left: ball.position.x + 'vw', top: ball.position.y + 'vh' }}
           css={{ left: ball.position.x, top: ball.position.y }}
-          variant={ball.image}
+          image={ball.image}
         />
       ))}
 
@@ -105,7 +133,7 @@ export default function Scoreboard({ currentScore }: MatchData) {
         <BallDiv
           key={ball.key}
           css={{ left: ball.position.x, top: ball.position.y }}
-          variant={ball.image}
+          image={ball.image}
         >
           {ball.bars.map((bar) => (
             <BarDiv
@@ -114,6 +142,36 @@ export default function Scoreboard({ currentScore }: MatchData) {
             />
           ))}
 
+        </BallDiv>
+      ))}
+
+      {ballsOfBigEyeBoy.map((ball: BigEyeBoyBall) => (
+        <BallDiv
+          key={ball.key}
+          css={{ left: ball.position.x, top: ball.position.y }}
+          image={ball.image}
+          size="bigEyeBoyBall"
+        >
+        </BallDiv>
+      ))}
+
+      {ballsOfSmallRoad.map((ball: SmallRoadBall) => (
+        <BallDiv
+          key={ball.key}
+          css={{ left: ball.position.x, top: ball.position.y }}
+          image={ball.image}
+          size="bigEyeBoyBall" //! TODO: Check this out, maybe need change the name
+        >
+        </BallDiv>
+      ))}
+
+      {ballsOfCockroachPig.map((ball: SmallRoadBall) => (
+        <BallDiv
+          key={ball.key}
+          css={{ left: ball.position.x, top: ball.position.y }}
+          image={ball.image}
+          size="bigEyeBoyBall" //! TODO: Check this out, maybe need change the name
+        >
         </BallDiv>
       ))}
 

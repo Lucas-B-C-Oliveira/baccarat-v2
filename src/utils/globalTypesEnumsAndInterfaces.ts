@@ -57,15 +57,52 @@ export interface BarOfBallOfTheBigRoad {
   position: Position
 }
 
+export type BigRoadBallImage = Balls.BANKER | Balls.PLAYER | Balls.INVISIBLE | undefined
+export type SmallRoadBallImage = Balls.BANKER | Balls.PLAYER | Balls.INVISIBLE | undefined
+export type CockroachPigImage = Balls.BANKER | Balls.PLAYER | Balls.INVISIBLE | undefined
+
 export interface BallBigRoad {
   key: string
-  image: Balls,
+  image: BigRoadBallImage,
   position: Position
-  bars: BarOfBallOfTheBigRoad[]
+  bars: BarOfBallOfTheBigRoad[],
+  row?: number,
+  column?: number
+
 }
 
 export interface BigRoadState {
   bigRoadBalls: BallBigRoad[]
+}
+
+export interface BigEyeBoyBall {
+  key: string
+  image: BigRoadBallImage,
+  position: Position
+}
+
+export interface BigEyeBoyState {
+  bigEyeBoyBalls: BigEyeBoyBall[]
+}
+
+export interface SmallRoadBall {
+  key: string
+  image: SmallRoadBallImage,
+  position: Position
+}
+
+export interface SmallRoadState {
+  smallRoadBalls: SmallRoadBall[]
+}
+
+export interface CockroachPigBall {
+  key: string
+  image: CockroachPigImage,
+  position: Position
+}
+
+export interface CockroachPigState {
+  cockroachPigBalls: CockroachPigBall[]
 }
 
 export interface IsItToClean {
@@ -82,6 +119,9 @@ export interface MatchData {
   newBeadPlateBall?: BallBeadPlate
   newBigRoadBall?: BallBigRoad
   newBigRoadBar?: BarOfBallOfTheBigRoad
+  newBigEyeBoyBall?: BigEyeBoyBall
+  newSmallRoadBall?: SmallRoadBall
+  newCockroachPigBall?: CockroachPigBall
   currentScore?: CurrentScore
 }
 

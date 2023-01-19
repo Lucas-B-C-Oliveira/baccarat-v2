@@ -94,7 +94,7 @@ export const BallDiv = styled('div', {
   backgroundRepeat: 'no-repeat',
 
   variants: {
-    variant: {
+    image: {
       player: {
         backgroundImage: `url(${playerBall.src})`,
       },
@@ -127,6 +127,14 @@ export const BallDiv = styled('div', {
         background: `url(${invisibleBall.src})`,
       },
 
+    },
+    size: {
+      bigEyeBoyBall: {
+        width: 14,
+        height: 14,
+        backgroundSize: '100% 100%',
+        backgroundRepeat: 'no-repeat',
+      }
     }
   }
 

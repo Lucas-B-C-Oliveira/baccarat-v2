@@ -1,11 +1,17 @@
 import { configureStore } from '@reduxjs/toolkit'
 import beadPlateSlice from '../slices/beadPlateSlice'
 import bigRoadSlice from '../slices/bigRoadSlice'
+import bigEyeBoySlice from '../slices/bigEyeBoySlice';
+import smallRoadSlice from '../slices/smallRoadSlice'
+import cockroachPigSlice from '../slices/cockroachPigSlice';
 
 export const store = configureStore({
   reducer: {
     beadPlate: beadPlateSlice,
     bigRoad: bigRoadSlice,
+    bigEyeBoy: bigEyeBoySlice,
+    smallRoad: smallRoadSlice,
+    cockroachPig: cockroachPigSlice
   },
 })
 
